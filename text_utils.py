@@ -121,12 +121,14 @@ class RenderFont(object):
         # get the number of lines
         lines = text.split('\n')
         lengths = [len(l) for l in lines]
-
+        
         # font parameters:
         line_spacing = font.get_sized_height() + 1
         
         # initialize the surface to proper size:
-        line_bounds = font.get_rect(lines[np.argmax(lengths)])
+        line = lines[np.argmax(lengths)].strip()
+        line_bounds = font.get_rect(line)
+        
         fsize = (round(2.0*line_bounds.width), round(1.25*line_spacing*len(lines)))
         surf = pygame.Surface(fsize, pygame.locals.SRCALPHA, 32)
 
@@ -513,9 +515,9 @@ class TextSource(object):
                       'LINE':self.sample_line,
                       'PARA':self.sample_para}
 
-        with open(fn,'r') as f:
+        with open(fn,'r', encoding='utf8') as f:
             self.txt = [l.strip() for l in f.readlines()]
-
+       
         # distribution over line/words for LINE/PARA:
         self.p_line_nline = np.array([0.85, 0.10, 0.05])
         self.p_line_nword = [4,3,12]  # normal: (mu, std)
